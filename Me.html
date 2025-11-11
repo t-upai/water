@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<!-- Boxicons -->
+	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+	<!-- My CSS -->
+	<link rel="stylesheet" href="assets/css/style.css">
+
+	<title>Infinity Water</title>
+	<link rel="icon" type="jpg" href="assets/img/admin.jpg">
+
+
+</head>
+<body>
+
+
+	<!-- SIDEBAR -->
+	<section id="sidebar">
+		<a href="#" class="brand">
+			<i class='bx bxs-droplet'></i>
+			<span class="text">Infinity Water</span>
+		</a>
+		<ul class="side-menu top">
+			<li>
+				<a href="admindashboard.html">
+					<i class='bx bxs-dashboard' ></i>
+					<span class="text">Dashboard</span>
+				</a>
+			</li>
+			<li>
+				<a href="showproducts.html">
+					<i class='bx bxs-shopping-bag-alt' ></i>
+					<span class="text">Show Products</span>
+				</a>
+			</li>
+			<li>
+				<a href="addproducts.html">
+					<i class='bx bxs-duplicate' ></i>
+					<span class="text">Add Products</span>
+				</a>
+			</li>
+			<li>
+				<a href="listpelanggan.html">
+					<i class='bx bxs-group' ></i>
+					<span class="text">List Pelanggan</span>
+				</a>
+			</li>
+			<li>
+				<a href="listpesanan.html">
+					<i class='bx bxs-shopping-bags' ></i>
+					<span class="text">List Pesanan</span>
+				</a>
+			</li>
+            <li class="active">
+				<a href="Me.html">
+					<i class='bx bxs-user-circle' ></i>
+					<span class="text">Profile</span>
+				</a>
+			</li>
+		</ul>
+		<ul class="side-menu">
+			<li>
+				<a href="#" class="logout">
+					<i class='bx bxs-log-out-circle' ></i>
+					<span onclick="logout()" class="text">Logout</span>
+				</a>
+			</li>
+		</ul>
+        
+	</section>
+	<!-- SIDEBAR -->
+
+
+	<!-- CONTENT -->
+	<section id="content">
+		<!-- NAVBAR -->
+		<nav>
+			<i class='bx bx-menu' ></i>
+			<a href="#" class="nav-link">Categories</a>
+			<form action="#">
+				<div class="form-input">
+					<input type="search" placeholder="Search...">
+					<button type="submit" class="search-btn"><i class='bx bx-search' ></i></button>
+				</div>
+			</form>
+			<input type="checkbox" id="switch-mode" hidden>
+			<label for="switch-mode" class="switch-mode"></label>
+			<a href="#" class="notification">
+				<i class='bx bxs-bell' ></i>
+				<span class="num">8</span>
+			</a>
+			<a href="#" class="profile">
+				<img src="assets/img/admin.jpg">
+			</a>
+		</nav>
+		<!-- NAVBAR -->
+
+		<!-- MAIN -->
+		<main>
+			<div class="head-title">
+				<div class="left">
+					<h1>Profile</h1>
+					<ul class="breadcrumb">
+						<li>
+							<a href="Me.html">Dashboard</a>
+						</li>
+						<li><i class='bx bx-chevron-right' ></i></li>
+						<li>
+							<a class="active" href="#">Profile</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="table-data">
+				<div class="order">
+					<div class="head">
+						<h3>Profiles</h3>
+					</div>
+					<table>
+					<div class="todo">
+						<div class="head">
+							<div class="ms-5">
+							<img src="assets/img/admin.jpg" alt="Foto Profil" class="profile-img">
+							</div>
+							<div id="profile_pp"></div>
+						</div>
+					</div>
+					</table>
+				</div>
+			</div>
+			</div>
+		</main>
+		<!-- MAIN -->
+	</section>
+	<!-- CONTENT -->
+	
+    <!-- Template Main JS File -->
+	<script src="assets/js/script.js"></script>
+
+    <script src="assets/js/profile.js"></script>
+
+    <script>
+        // mengambil elemen untuk menampilkan nama profil
+        const profile_namess = document.getElementById('profile_pp');
+      
+        // ini token dari localStorage
+        const acc = localStorage.getItem('access_token');
+      
+        // mengirim access token untuk mendapatkan data
+        fetch('https://backendinfinitywater.hayyalmusafir.com/api/auth/me', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${acc}`
+          },
+          body: JSON.stringify({
+            // token berlaku sebagai body
+            access_token: acc
+          })
+        })
+          .then(response => {
+              if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+              }
+              return response.json();
+            })
+          .then(datas => {
+            const roleText = datas.role === '1' ? 'ADMIN' : datas.role === '2' ? 'USER' : 'UNKNOWN';
+            // get dan post name dan role dari respons
+            if (datas && datas.name && datas.role && datas.username && datas.email) {
+              profile_namess.innerHTML = `
+               <div class="mb-3">
+        <label for="username_profile" class="form-label">Username</label>
+        <input type="text" class="form-control" id="username_profile" placeholder="Masukkan username" value="${datas.username}" disabled>
+    </div>
+    <div class="mb-3">
+        <label for="nama_profile" class="form-label">Nama</label>
+        <input type="text" class="form-control" id="nama_profile" placeholder="Masukkan nama" value="${datas.name}">
+    </div>
+    <div class="mb-3">
+        <label for="email_profile" class="form-label">Email</label>
+        <input type="email" class="form-control" id="email_profile" placeholder="Masukkan email" value="${datas.email}">
+    </div>
+    <div class="mb-3">
+        <label for="role_profile" class="form-label">Role</label>
+        <input type="text" class="form-control" id="role_profile" placeholder="Masukkan role" value="${roleText}" disabled>
+    </div>
+    <div class="mb-3">
+        <label for="id_profile" class="form-label">ID Pengguna</label>
+        <input type="text" class="form-control" id="id_profile" placeholder="Masukkan ID Pengguna" value="${datas.id}" disabled>
+    </div>`;
+            } else {
+              console.error('Nama tidak ditemukan dalam respons.');
+              profile_namess.innerHTML = '<p class="text-danger">Gagal memuat username.</p>';
+            }
+          })
+    </script>
+
+	<script>
+		function logout(){
+		localStorage.removeItem("isloggedin");
+		window.location.href="login.html";
+		}
+	</script>
+</body>
+</html>
